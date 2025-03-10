@@ -8,11 +8,32 @@
 import SwiftUI
 
 struct CategoriesView: View {
+    
+    @EnvironmentObject var recipeVm : RecipesViewModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        NavigationView {
+            List {
+                
+                ForEach(RecipeCategory.allCases, id: \.self){ category in
+                    
+                    NavigationLink {
+                        ScrollView(){
+                            RecipeList(recipes: recipeVm.recipes.filter{
+                                $0.category == category.rawValue})
+                        }
+                        .navigationTitle(category.rawValue + "s")
+                    } label: {
+                        Text(category.rawValue + "s")
+                    }
+                }
+                .navigationTitle("Categories")
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 }
 
 #Preview {
-    CategoriesView()
+    CategoriesView().environmentObject(RecipesViewModel())
 }
